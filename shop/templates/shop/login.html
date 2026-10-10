@@ -1,0 +1,15 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+  <div class="auth-container">
+      <h2>Login to Your Account</h2>
+      <form method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+          {{ form.as_p }}
+          {% csrf_token %}
+          <input type="submit" value="Login" class="button">
+      </form>
+      <p style="margin-top: 1.5rem; text-align: center; color: var(--text-muted);">Don't have an account? <a href="{% url 'shop:register' %}" style="color: var(--primary-color); font-weight: 600;">Register</a></p>
+  </div>
+{% endblock %}
