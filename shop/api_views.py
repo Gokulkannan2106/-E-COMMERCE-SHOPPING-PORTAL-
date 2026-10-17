@@ -439,10 +439,10 @@ class AdminDashboardStatsView(views.APIView):
         for s, _ in Order.STATUS_CHOICES:
             status_breakdown[s] = Order.objects.filter(status=s).count()
 
-        # Recent 10 orders
+        # Recent 15 orders
         recent_orders = Order.objects.select_related('user').prefetch_related(
             'items__product'
-        ).order_by('-created')[:10]
+        ).order_by('-created')[:15]
 
         # Top 5 best-selling products
         top_products = (
@@ -451,6 +451,8 @@ class AdminDashboardStatsView(views.APIView):
             .annotate(total_sold=Sum('quantity'))
             .order_by('-total_sold')[:5]
         )
+
+        all_products = Product.objects.select_related('category').order_by('-created')
 
         return Response({
             'total_orders': total_orders,
@@ -461,6 +463,7 @@ class AdminDashboardStatsView(views.APIView):
             'status_breakdown': status_breakdown,
             'recent_orders': OrderSerializer(recent_orders, many=True).data,
             'top_products': list(top_products),
+            'products': ProductSerializer(all_products, many=True, context={'request': request}).data,
         })
 
 
@@ -476,6 +479,12 @@ class AdminProductListCreateView(generics.ListCreateAPIView):
             return ProductSerializer
         return ProductCreateUpdateSerializer
 
+    @property
+    def paginator(self):
+        if self.request.query_params.get('all') == 'true' or self.request.query_params.get('no_page') == 'true':
+            return None
+        return super().paginator
+
     def perform_create(self, serializer):
         name = self.request.data.get('name', '')
         base_slug = slugify(name) or 'product'
@@ -485,13 +494,34 @@ class AdminProductListCreateView(generics.ListCreateAPIView):
             slug = f"{base_slug}-{random.randint(100, 9999)}"
         serializer.save(slug=slug)
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        # Return full ProductSerializer representation
+        product = serializer.instance
+        return Response(ProductSerializer(product, context={'request': request}).data, status=status.HTTP_201_CREATED)
+
 
 class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductCreateUpdateSerializer
     permission_classes = [permissions.IsAdminUser]
     lookup_field = 'id'
     parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ProductSerializer
+        return ProductCreateUpdateSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        product = serializer.instance
+        return Response(ProductSerializer(product, context={'request': request}).data)
 
 
 # ── Admin: Order Management ────────────────────────────────

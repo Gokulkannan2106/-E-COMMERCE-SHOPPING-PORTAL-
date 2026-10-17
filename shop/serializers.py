@@ -208,8 +208,10 @@ class ProductCreateUpdateSerializer(serializers.ModelSerializer):
             'description', 'price', 'available'
         )
         extra_kwargs = {
-            'slug': {'required': False},
-            'image': {'required': False},
+            'slug': {'required': False, 'allow_blank': True},
+            'image': {'required': False, 'allow_null': True},
+            'image_url': {'required': False, 'allow_blank': True, 'allow_null': True},
+            'description': {'required': False, 'allow_blank': True},
         }
 
 

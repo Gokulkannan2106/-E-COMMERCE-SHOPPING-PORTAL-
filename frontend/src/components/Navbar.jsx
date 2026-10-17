@@ -102,9 +102,32 @@ const Navbar = () => {
         </form>
 
         {/* Navigation Links (Desktop) */}
-        <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <Link to="/shop" style={{ fontWeight: '500', color: 'var(--text-muted)', transition: 'color var(--transition-fast)' }} onMouseEnter={(e) => e.target.style.color = '#FFF'} onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
             Explore Shop
+          </Link>
+
+          <Link 
+            to="/admin" 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px', 
+              fontWeight: '600', 
+              fontSize: '13px',
+              padding: '6px 13px',
+              borderRadius: 'var(--radius-full)',
+              background: 'rgba(99, 102, 241, 0.12)',
+              border: '1px solid rgba(99, 102, 241, 0.25)',
+              color: 'var(--primary)',
+              transition: 'all var(--transition-fast)' 
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--primary)'; e.currentTarget.style.color = '#FFF'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(99, 102, 241, 0.12)'; e.currentTarget.style.color = 'var(--primary)'; }}
+            title="Merchant Admin Dashboard & Product Management"
+          >
+            <LayoutDashboard size={14} />
+            <span>Admin Dashboard</span>
           </Link>
 
           {/* Quick Menu (Compressed Project Links in Single Dropdown) */}
@@ -203,31 +226,27 @@ const Navbar = () => {
                   </>
                 )}
 
-                {isAdmin && (
-                  <>
-                    <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '4px 0' }} />
-                    <Link
-                      to="/admin"
-                      onClick={() => setLinksDropdown(false)}
-                      style={{ padding: '8px 12px', borderRadius: 'var(--radius-sm)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--primary)' }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <LayoutDashboard size={15} /> Merchant Dashboard
-                    </Link>
-                    <a
-                      href="/django-admin/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setLinksDropdown(false)}
-                      style={{ padding: '8px 12px', borderRadius: 'var(--radius-sm)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--accent)' }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(16, 185, 129, 0.1)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <ShieldCheck size={15} /> Django Admin Panel <ExternalLink size={12} />
-                    </a>
-                  </>
-                )}
+                <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '4px 0' }} />
+                <Link
+                  to="/admin"
+                  onClick={() => setLinksDropdown(false)}
+                  style={{ padding: '8px 12px', borderRadius: 'var(--radius-sm)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--primary)', fontWeight: '600' }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <LayoutDashboard size={15} /> Merchant Dashboard
+                </Link>
+                <a
+                  href="/django-admin/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setLinksDropdown(false)}
+                  style={{ padding: '8px 12px', borderRadius: 'var(--radius-sm)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--accent)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(16, 185, 129, 0.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <ShieldCheck size={15} /> Django Admin Panel <ExternalLink size={12} />
+                </a>
               </div>
             )}
           </div>
@@ -523,6 +542,13 @@ const Navbar = () => {
               style={{ padding: '10px 12px', borderRadius: 'var(--radius-sm)', fontWeight: '600', color: 'var(--text-main)', background: 'rgba(255,255,255,0.04)' }}
             >
               💬 Support & Help
+            </Link>
+            <Link
+              to="/admin"
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{ padding: '10px 12px', borderRadius: 'var(--radius-sm)', fontWeight: '600', color: 'var(--primary)', background: 'rgba(99, 102, 241, 0.1)' }}
+            >
+              📊 Merchant Admin Dashboard
             </Link>
 
             {isAuthenticated ? (
